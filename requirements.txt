@@ -1,0 +1,17 @@
+import pandas as pd
+import numpy as np
+import requests
+from pprint import pprint
+from bs4 import BeautifulSoup
+import re
+import json
+from urllib.request import Request, urlopen
+from lxml import html
+import time
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+from wordcloud import WordCloud
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.cluster import KMeans
+from yellowbrick.cluster import KElbowVisualizer, SilhouetteVisualizer
