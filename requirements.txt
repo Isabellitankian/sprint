@@ -1,5 +1,4 @@
-ltair==5.1.2
-attrs==23.1.0
+attrs==23.1
 beautifulsoup4==4.12.2
 blinker==1.6.3
 bs4==0.0.1
