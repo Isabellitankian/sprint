@@ -1,18 +1,13 @@
-import streamlit as st
-from pandas import read_csv
-import plotly.express as px
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans
-from sklearn.feature_extraction.text import TfidfVectorizer
-from wordcloud import WordCloud
-import time
-import numpy as np
 import pandas as pd
-import requests
-from bs4 import BeautifulSoup
-import nltk
-
+import numpy as np
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_classification
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import plot_tree
+from sklearn.metrics import accuracy_score
+from sklearn import metrics
 
 
 
