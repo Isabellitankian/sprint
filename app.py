@@ -1,200 +1,86 @@
 import pandas as pd
 import numpy as np
+import seaborn as sns
+
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
-from sklearn.datasets import make_classification
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.tree import plot_tree
 from sklearn.metrics import accuracy_score
 from sklearn import metrics
 
+
+import streamlit as st
+import matplotlib.pyplot as plt
 
 
 class Crawler:
 
 
-    def __init__(self) -> None:
-        pass
+    def _init_(self) -> None:
+        self.breast = load_breast_cancer()
 
+        X = self.breast.data
+        y = self.breast.target
 
-    def execute(self):
-
-        html = self.get_html_site('https://www.imdb.com/chart/moviemeter/?ref_=chttvtp_ql_2')
-
-        links_sinopses = self.get_links_sinopses(html)
-        print(f'N° de listas: {len(links_sinopses)}')
-
-        df_sinopse = self.get_df_sinopse(links_sinopses)
-
-        return df_sinopse
-
-
-
-    def get_html_site(self, url):
-        userAgents=[
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/74.0.3729.157 Safari/537.36",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15"]
-
-        url = 'https://www.imdb.com/chart/moviemeter/?ref_=chttvtp_ql_2'
-        response = requests.get(url, headers={"User-agent": userAgents[1]})
+        self.X_train, self.X_test, self.Y_train, self.Y_test = train_test_split(X,
+                                                     y,
+                                                     test_size=0.3,
+                                                     random_state=42)
         
-        return BeautifulSoup(response.text, "html.parser")
-    
+        self.modelo = LogisticRegression(max_iter=4000)
+        self.modelo.fit(self.X_train, self.Y_train)
 
-    def get_df_sinopse(self, links_sinopse):
-        headers = {
-            'authority': 'www.amazon.com.br',
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-            'accept-language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-            'cache-control': 'max-age=0',
-            'device-memory': '8',
-            'downlink': '10',
-            'dpr': '1.875',
-            'ect': '4g',
-            'rtt': '50',
-            'sec-ch-device-memory': '8',
-            'sec-ch-dpr': '1.875',
-            'sec-ch-ua': '"Chromium";v="110", "Not A(Brand";v="24", "Google Chrome";v="110"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'sec-ch-ua-platform-version': '"10.0.0"',
-            'sec-ch-viewport-width': '455',
-            'sec-fetch-dest': 'document',
-            'sec-fetch-mode': 'navigate',
-            'sec-fetch-site': 'none',
-            'sec-fetch-user': '?1',
-            'upgrade-insecure-requests': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
-            'viewport-width': '455',
-        }
-        list_genre = []
-        list_title_pt = []
-        list_year = []
-        list_sinopse = []
 
-        for link in links_sinopse:
-            time.sleep(.5)
-            response = requests.get(link, headers = headers)
-            html = response.content
-            soup = BeautifulSoup(html, "html.parser")
-
-            #genre
-            try:
-                for genre in soup.find('span', {'class':'ipc-chip__text'}):
-                    genre = genre.text
-                    list_genre.append(genre)
-            except:
-                list_genre.append(np.nan)
-                print('Nan')
-
-            #title_PT and year
-            try:
-                for x in soup.find('title'):
-                    #title_pt
-                    title_pt = (x.text)[:-14].strip()
-                    list_title_pt.append(title_pt)
-                    #year
-                    year = (x.text)[-12:-8].strip()
-                    list_year.append(year)
-
-            except:
-                list_title_pt.append(np.nan)
-                list_year.append(np.nan)
-
-            #sinopse
-            try:
-                for sin in soup.find('span', {"data-testid":"plot-xl"}):
-                    sinopse = sin.text
-                    list_sinopse.append(sinopse)
-            except:
-                list_sinopse.append(np.nan)
-
-        a = {'title_pt' : list_title_pt ,'year' : list_year , 'genre': list_genre , 'sinopse':list_sinopse}
-        df = pd.DataFrame.from_dict(a, orient='index')
-        return df.transpose()
+    def get_def(self):
         
+        breast_data = self.breast.data
+        breast_labels = self.breast.target
 
-    def get_links_sinopses(self, html):
-        list_links = []
-        for a in html.find_all('a', href=True):
-            if '/title/' in a['href'] and 'https://www.imdb.com/'+ a['href'] not in list_links:
-                list_links.append(('https://www.imdb.com/'+a['href'])[:-15])
+        labels = np.reshape(breast_labels, (569, 1))
+        final = np.concatenate( [breast_data, labels], axis=1 )
+        
+        colunas = list(self.breast.feature_names)
+        colunas.append("label")
 
-        #Remove duplicates
-        list_links = list(dict.fromkeys(list_links))
-        #Deleting first element
-        list_links = list_links[1:]
-
-        return list_links
-
-
-    def salva_csv(self):
-        df = self.execute()
-        df.to_csv('sinopse.csv', index=False, encoding='utf-8-sig')
-
-
-def get_kmeans_labels(df_processed):
-
-    vectorizer = TfidfVectorizer(sublinear_tf=True, min_df=5, max_df=0.95)
-    X = vectorizer.fit_transform(df_processed['sinopse_no_stopwords'])
-
-    # initialize kmeans with 5 centroids
-    kmeans = KMeans(n_clusters=5, random_state=42)
-    # fit the model
-    kmeans = kmeans.fit(X)
-    #predicting the clusters and store cluster labels in a variable
-    return kmeans.predict(X)
+        df = pd.DataFrame(final, columns=colunas)
+        
+        return df
 
     
+    def relatorio_classification(self):
 
-def processa_dados(dados):
+        y_predict = self.modelo.predict(self.X_test)
+        return metrics.classification_report(self.Y_test, y_predict)
+    
+    
+    def modelo_regressao(self):
 
-    def qty_words(text):
-        words= text.split()
-        word_count = len(words)
-        return word_count
+        st.write()
 
-    df_processed = dados.copy()
-    df_processed['sinopse'] = df_processed['sinopse'].str.lower()
+        y_predict = self.modelo.predict(self.X_test)
 
-    ### Feature Engineering
-    df_processed['word_count'] = df_processed['sinopse'].apply(qty_words).astype('int64')
-
-    nltk.download('stopwords')
-    stopwords = nltk.corpus.stopwords.words('portuguese')
-    df_processed['sinopse_no_stopwords'] = df_processed['sinopse'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stopwords)]))
-
-    df_processed['cluster'] = get_kmeans_labels(df_processed)
-
-    return df_processed
+        fig, ax = plt.subplots()
+        metrics.ConfusionMatrixDisplay.from_predictions(self.Y_test, y_predict)
+        # sns.heatmap(matriz_confusao, annot=True)
+        st.write(fig)
 
 
-def get_df_plot(df_processed):
-  
-    df_plot = df_processed.groupby(['cluster', 'genre'])['title_pt'].count()
-    df_plot = df_plot.reset_index()
-    df_plot.rename(columns = {'title_pt':'count'}, inplace = True)
-    df_plot['%'] = 100 * df_plot['count'] / df_plot.groupby('cluster')['count'].transform('sum')
-    df_plot = df_plot.sort_values(['cluster', '%'], ascending = False).groupby('cluster').head(11)
+    def get_acuracia(self):
 
-    return df_plot
+        y_predict = self.modelo.predict(self.X_test)
+        return metrics.accuracy_score(self.Y_test,y_predict )
+
+    # def plot_confusion_matrix(X_train, y_train):
+    #     labels=list(map(np.argmax,y_train))
+    #     labels_pred = list(map(np.argmax, y_train))
+
+    #     cf_matrix = confusion_matrix(labels, labels_pred)
+    #     sns.heatmap(cf_matrix, annot=True)
 
 
-def word_cloud_cluster(df_processed, cluster: int):
-  
-  text = ' '.join([phrase for phrase in df_processed.loc[df_processed.cluster == cluster]['sinopse_no_stopwords']])
-  plt.figure(figsize=(7,5), facecolor='None')
-  
-  wordcloud = WordCloud(max_words=500, width=1600, height=800).generate(text)
 
-  plt.imshow(wordcloud, interpolation='bilinear')
-  plt.axis('off')
-  plt.title(f'Cluster "{cluster}" | Palavras mais frequentes', fontsize = 19)
-  
-  st.pyplot(plt.gcf())
-  
-
+op = Crawler()
 
 
 def main():
@@ -205,86 +91,74 @@ def main():
                         layout = 'wide',
                         initial_sidebar_state = 'expanded')
 
-    st.title('Exibição de filmes por cluster :D')
-
-    with st.sidebar:
-        c1, c2 = st.columns(2)
-
-        c2.write('')
-        c2.subheader('Automated Machine Learning and Deploy')
-
-        # database = st.selectbox('Fonte dos dados de entrada (X):', ('CSV', 'Online'))
-        database = st.radio('Fonte dos dados de entrada (X):', ('CSV', )) #, 'Online'
-        df_sinopse = None
-
-        if database == 'CSV':
-            st.info('Upload do CSV')
-            file = st.file_uploader('Selecione o arquivo CSV', type='csv')
-            if file:
-                df_sinopse = read_csv(file)
-            
-                
-
-        # elif database == 'Online':
-        #     crawler = Crawler()
-        #     df_sinopse = crawler.execute()
     
 
+    st.title("""
+        Analise de imagens de pessoas com câncer, divididas entre beligno e maligno. 
+
+        Por que utilizar Logistic Regreesion?
+
+        A regressão logística é uma técnica estatística frequentemente utilizada para realizar classificação binária, onde o objetivo é prever se uma observação pertence a uma das duas categorias possíveis. Quando aplicada ao campo médico, especificamente na classificação de imagens de câncer como benigno ou maligno, a regressão logística apresenta várias vantagens e importâncias.
+             
+        1. Interpretabilidade:
+            A regressão logística produz coeficientes que podem ser interpretados como log-odds. Esses coeficientes indicam a direção e magnitude da influência de cada característica na probabilidade de um caso ser classificado como maligno. Isso é crucial no contexto médico, pois os médicos podem entender quais características da imagem estão associadas a um maior risco de câncer.
+        
+        2. Probabilidades ajustadas:
+            A regressão logística fornece probabilidades ajustadas, que são úteis para avaliar o quão certa ou incerta é uma predição. No caso de imagens médicas, é valioso ter uma medida de confiança na classificação, pois isso pode impactar decisões subsequentes sobre o tratamento ou acompanhamento.
     
-    if df_sinopse is not None:
+        3. Lidar com dados desbalanceados:
+            Em problemas médicos, os conjuntos de dados muitas vezes são desbalanceados, com uma classe sendo mais prevalente do que a outra. A regressão logística é capaz de lidar com esse desbalanceamento, ajustando os pesos durante o treinamento para garantir uma consideração apropriada de ambas as classes.
 
-        # st.table(df_sinopse)
-        with st.expander('Filmes por genêro:', expanded = True):
+        4. Eficiência computacional:
+            Comparada a modelos mais complexos, como redes neurais profundas, a regressão logística é computacionalmente eficiente. Isso é particularmente importante em aplicações médicas, onde a interpretabilidade e eficiência de recursos são cruciais.
 
-            fig = px.bar(df_sinopse.genre.value_counts('d')*100,
-                text_auto=True,
-                title = '% de Filmes por Gênero',
-                labels={'index':'Gênero',
-                        'value':'% de Filmes'})
-            
-            st.plotly_chart(fig)
-        
-        
-        with st.expander('Filmes por ano:', expanded = True):
+        5. Facilidade de implementação:
+            A regressão logística é relativamente fácil de entender e implementar. Isso facilita a integração da técnica em ambientes clínicos, onde a compreensão do modelo é crucial para a aceitação e confiança dos profissionais de saúde.      
 
-            plt.figure(figsize = (20,7))
-            sns.histplot(df_sinopse,
-                        x = 'year',
-                        kde = True).set_title('Qtd de Filmes por Ano')
-            plt.xticks(rotation=45)
-            st.pyplot(plt.gcf())
-        
-        df_processado = processa_dados(df_sinopse)
-        print(df_processado)
+        6. Regularização:
+            A regressão logística pode ser regularizada para evitar overfitting. Em situações médicas, onde os conjuntos de dados podem ser pequenos, a capacidade de evitar o overfitting é vital para garantir que o modelo generalize bem para novos dados.
 
-        with st.expander('Generos por clusters:', expanded = True):
-            
-            df_plot = get_df_plot(df_processado)
 
-            plt.figure(figsize = (20, 10))
-            g = sns.catplot(
-                data=df_plot,
-                x="genre",
-                y = "%",
-                col="cluster",
-                kind="bar",
-                height=4,
-                aspect=1,
-                sharex = False
-            )
-            
-            # fig.set_xlabels('')
-            g.set_xticklabels(rotation=90, size = 8)
+    """)
+    
 
-            st.pyplot(plt.gcf())
+    with st.expander('', expanded = True):
         
+        st.title('')
+        st.title('Dados de indivíduos com câncer')
+
+        df_plot = op.get_def()
+        st.dataframe(df_plot)
+    
+    st.title("""
+        Matriz de Confusão:
+             
+        A matriz de confusão é uma ferramenta crucial na avaliação de modelos, incluindo a regressão logística. Ela fornece uma visão resumida e intuitiva do desempenho do modelo ao comparar suas previsões com os resultados reais. Os elementos da matriz, como verdadeiros positivos, verdadeiros negativos, falsos positivos e falsos negativos, são essenciais para calcular métricas como precisão, recall, especificidade e a pontuação F1.
         
+        Essa análise mais detalhada ajuda a entender não apenas a taxa de acertos gerais, mas também como o modelo lida com diferentes tipos de erros, fornecendo informações valiosas para ajustes e melhorias.
+             
+        Abaixo a matriz do resultado que o modelo previu.
+    """)
+    
+    with st.expander('', expanded = True):
         
-        with st.expander('Visualizar gráfico solar teste:', expanded = True):
-            
-            
-            for c in range(5):
-                word_cloud_cluster(df_processado, c)
+        st.title('Matriz de comparação de métricas')
+
+        acuracia = op.relatorio_classification()
+        st.text(acuracia)
+    
+    
+    with st.expander('', expanded = True):
+        
+        st.title('Acuracia do Modelo')
+
+        
+        acuracia = op.get_acuracia()
+        st.title(f'Acurácia: {round(acuracia * 100, 2)}%')
+        
+
+    
+
             
            
 
@@ -292,6 +166,6 @@ def main():
         
 
 
-if __name__ == '__main__':
+if _name_ == '_main_':
   
     main()
