@@ -5,7 +5,6 @@ import seaborn as sns
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn import metrics
 
@@ -17,7 +16,7 @@ import matplotlib.pyplot as plt
 class Crawler:
 
 
-    def _init_(self) -> None:
+    def __init__(self) -> None:
         self.breast = load_breast_cancer()
 
         X = self.breast.data
@@ -159,11 +158,6 @@ def main():
 
     
 
-            
-           
-
-
-        
 
 
 if __name__ == '_main_':
