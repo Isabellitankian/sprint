@@ -2,6 +2,9 @@ import csv
 import requests
 from fastapi import FastAPI
 
+
+print("estamos em obra rs")
+
 def request_embrapa(arquivo = None):
     urlBase = 'http://vitibrasil.cnpuv.embrapa.br/download/'
     arquivos = ['Producao', 'ProcessaViniferas', 'ProcessaAmericanas', 'ProcessaMesa', 'ProcessaSemclass', 'Comercio', 'ImpVinhos', 
