@@ -64,7 +64,7 @@ def main():
     page_icon="👋",
     )
 
-    st.write("# Olá! 👋👋👋 Bem vindo ao demonstrativo do site da embrapa, no qual fazemos o request de suas APIs!")
+    st.write("# Olá! 👋👋👋 Bem vindo ao demonstrativo do site da Embrapa, no qual fazemos o request de suas APIs!")
 
     st.sidebar.success("Estamos em obras aqui, peço que espere um pouquinho.")
 
