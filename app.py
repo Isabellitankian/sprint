@@ -64,13 +64,13 @@ def main():
     page_icon="👋",
     )
 
-    st.write("# Olá! 👋👋👋 Bem vindo ao demonstrativo do site da embrabar, no qual fazemos o request de suas APIs!")
+    st.write("# Olá! 👋👋👋 Bem vindo ao demonstrativo do site da embrapa, no qual fazemos o request de suas APIs!")
 
     st.sidebar.success("Estamos em obras aqui, peço que espere um pouquinho.")
 
     st.markdown(
         """
-        - Site da Emprapar:  http://vitibrasil.cnpuv.embrapa.br
+        - Site da Emprapa:  http://vitibrasil.cnpuv.embrapa.br
 
         - Contém os dados da produção:  http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_02
 
