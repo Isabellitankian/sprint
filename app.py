@@ -64,13 +64,23 @@ def main():
     page_icon="👋",
     )
 
-    st.write("# Bem vindo ao request de uma API (hihi)! 👋")
+    st.write("# Olá! 👋👋👋 Bem vindo ao demonstrativo do site da embrabar, no qual fazemos o request de suas APIs!")
 
-    st.sidebar.success("Selecione algo aqui:  (pls, pls)")
+    st.sidebar.success("Estamos em obras aqui, peço que espere um pouquinho.")
 
     st.markdown(
         """
-        - Link surpresa ? ('http://vitibrasil.cnpuv.embrapa.br/download/)
+        - Site da Emprapar:  http://vitibrasil.cnpuv.embrapa.br
+
+        - Contém os dados da produção:  http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_02
+
+        - Contém os dados do processamento:  http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_03
+
+        - Contém os dados da comercialização:  http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_04
+
+        - Contém os dados da importação: http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_05
+
+        - Link principal da Exportação:  http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_06
         
     """
     )
