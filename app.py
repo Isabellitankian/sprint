@@ -54,13 +54,13 @@ def main():
 
     # st.title("""
         
-    #         Olá! O intutito desse request é fazer o download no site da embrapar e realizar o download dos CSVs que são de importância para nós.
+    #         Olá! O intutito desse request é fazer o download no site da embrapa e realizar o download dos CSVs que são de importância para nós.
 
 
     # """)
     
     st.set_page_config(
-    page_title="Olá! O intutito desse request é fazer o download no site da embrapar e realizar o download dos CSVs que são de importância para nós.",
+    page_title="Olá! O intutito desse request é fazer o download no site da embrapa e realizar o download dos CSVs que são de importância para nós.",
     page_icon="👋",
     )
 
