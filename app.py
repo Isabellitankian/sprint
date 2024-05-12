@@ -52,14 +52,28 @@ def main():
 
     
 
-    st.title("""
+    # st.title("""
         
-            Olá! O intutito desse request é fazer o download no site da embrapar e realizar o download dos CSVs que são de importância para nós.
+    #         Olá! O intutito desse request é fazer o download no site da embrapar e realizar o download dos CSVs que são de importância para nós.
 
 
-    """)
+    # """)
     
+    st.set_page_config(
+    page_title="Olá! O intutito desse request é fazer o download no site da embrapar e realizar o download dos CSVs que são de importância para nós.",
+    page_icon="👋",
+    )
 
+    st.write("# Bem vindo ao request de uma API (hihi)! 👋")
+
+    st.sidebar.success("Selecione algo aqui:  (pls, pls)")
+
+    st.markdown(
+        """
+        - Link surpresa ? ('http://vitibrasil.cnpuv.embrapa.br/download/)
+        
+    """
+    )
     # with st.expander('', expanded = True):
         
     #     st.title('')
@@ -67,6 +81,7 @@ def main():
 
     #     df_plot = op.get_def()
     #     st.dataframe(df_plot)
+    #
     
     # st.title("""
     #     Matriz de Confusão:
