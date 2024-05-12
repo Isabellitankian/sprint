@@ -45,10 +45,10 @@ op = Crawler()
 def main():
 
 
-    st.set_page_config(page_title = 'Request API - The Outliers',
+    # st.set_page_config(page_title = 'Request API - The Outliers',
 
-                        layout = 'wide',
-                        initial_sidebar_state = 'expanded')
+    #                     layout = 'wide',
+    #                     initial_sidebar_state = 'expanded')
 
     
 
