@@ -80,7 +80,7 @@ def main():
 
         - Contém os dados da importação: http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_05
 
-        - Link principal da Exportação:  http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_06
+        - Contém os dados da Exportação:  http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_06
         
     """
     )
